@@ -1,0 +1,12 @@
+# Unit test / coverage reports
+.coverage
+coverage.xml
+tests.xml
+
+# Byte-compiled / optimized
+__pycache__
+*.py[cod]
+*$py.class
+
+# ide
+.vscode/
