@@ -25,6 +25,17 @@ def solve(reader: Reader) -> tuple[int, int]:
     return 0, 0
 """
 
+TEST_TEMPLATE = """from aoc.registry import SolutionRegistry
+
+"""
+
+TEST_CASE_TEMPLATE = """
+def test_task_%(day)02d():
+    res_1, res_2 = SolutionRegistry.run(%(year)s, %(day)s)
+    assert res_1 == 0
+    assert res_2 == 0
+"""
+
 
 def find_solutions() -> dict[int, set[int]]:
     root_dir = Path(__file__).parent
@@ -56,16 +67,25 @@ def get_new_day(state: dict[int, set[int]]) -> tuple[int, int]:
     return year, day + 1
 
 
-def create_new_year(year_dir: Path, data_dir: Path) -> None:
+def create_new_year(year_dir: Path, data_dir: Path, test_dir: Path) -> None:
     os.makedirs(year_dir, exist_ok=True)
     (year_dir / "__init__.py").touch()
 
     os.makedirs(data_dir, exist_ok=True)
 
+    os.makedirs(test_dir, exist_ok=True)
+    (test_dir / "__init__.py").touch()
+    test_tasks_file = test_dir / "test_task.py"
+    with open(test_tasks_file, mode="w") as f:
+        f.writelines(TEST_TEMPLATE)
 
-def create_new_day(year_dir: Path, day: int) -> None:
+
+def create_new_day(year_dir: Path, test_dir: Path, year: int, day: int) -> None:
     with open(year_dir / f"task_{day:02d}.py", mode="w") as f:
         f.writelines(TEMPLATE)
+
+    with open(test_dir / "test_task.py", mode="a") as f:
+        f.writelines(TEST_CASE_TEMPLATE % {"year": year, "day": day})
 
 
 def get_session_cookie() -> str:
@@ -85,10 +105,11 @@ def create_task(year: int, day: int) -> None:
     root_dir = Path(__file__).parent
     year_dir = root_dir / "aoc" / f"year_{year}"
     data_dir = root_dir / "data" / f"{year}"
+    test_dir = root_dir / "tests" / "unit" / f"year_{year}"
 
     if day == 1:
-        create_new_year(year_dir, data_dir)
-    create_new_day(year_dir, day)
+        create_new_year(year_dir, data_dir, test_dir)
+    create_new_day(year_dir, test_dir, year, day)
     get_data(data_dir, year, day)
 
 
