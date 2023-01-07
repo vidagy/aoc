@@ -1,5 +1,5 @@
 TEST_FILTER_ARG=$(if $(TEST_FILTER),-k "$(TEST_FILTER)",)
-PYTHON=python3.9
+PYTHON=python3
 
 .PHONY: run
 run:
@@ -8,11 +8,6 @@ run:
 .PHONY: next
 next:
 	$(PYTHON) next.py
-
-.PHONY: profile
-profile:
-	$(PYTHON) -m cProfile -o /tmp/tmp.prof run.py
-	snakeviz /tmp/tmp.prof
 
 # Tests
 
