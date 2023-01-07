@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 @SolutionRegistry.register
 def solve(reader: Reader) -> tuple[int, int]:
-    lines = reader.file_to_lines(%{day})
+    lines = reader.file_to_lines(%(day)d)
     logger.info(f"{lines[:3]=}...")
 
     return 0, 0
