@@ -9,6 +9,8 @@ __pycache__
 *$py.class
 
 # ide
+.idea/
 .vscode/
+venv/
 
 session.cookie
