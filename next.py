@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 @SolutionRegistry.register
 def solve(reader: Reader) -> tuple[int, int]:
-    lines = reader.file_to_lines(1)
+    lines = reader.file_to_lines(%{day})
     logger.info(f"{lines[:3]=}...")
 
     return 0, 0
@@ -82,7 +82,7 @@ def create_new_year(year_dir: Path, data_dir: Path, test_dir: Path) -> None:
 
 def create_new_day(year_dir: Path, test_dir: Path, year: int, day: int) -> None:
     with open(year_dir / f"task_{day:02d}.py", mode="w") as f:
-        f.writelines(TEMPLATE)
+        f.writelines(TEMPLATE % {"day": day})
 
     with open(test_dir / "test_task.py", mode="a") as f:
         f.writelines(TEST_CASE_TEMPLATE % {"year": year, "day": day})
