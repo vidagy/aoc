@@ -7,7 +7,7 @@ from collections import defaultdict
 from datetime import date
 from pathlib import Path
 
-from requests import get
+from aoc.util.integration import get_task_input
 
 TEMPLATE = """import logging
 
@@ -88,15 +88,8 @@ def create_new_day(year_dir: Path, test_dir: Path, year: int, day: int) -> None:
         f.writelines(TEST_CASE_TEMPLATE % {"year": year, "day": day})
 
 
-def get_session_cookie() -> str:
-    path = Path(__file__).parent / "session.cookie"
-    with open(path, mode="r") as f:
-        return f.readlines()[0].strip()
-
-
 def get_data(data_dir: Path, year: int, day: int) -> None:
-    url = f"https://adventofcode.com/{year}/day/{day}/input"
-    data = get(url, cookies={"session": get_session_cookie()}).content
+    data = get_task_input(year, day)
     with open(data_dir / f"task_{day:02d}.txt", mode="wb") as f:
         f.write(data)
 

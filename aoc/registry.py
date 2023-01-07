@@ -5,14 +5,13 @@ from typing import Callable, Optional, TypeVar
 
 from aoc.util.reader import Reader
 
-
-def run(year: Optional[int], day: Optional[int]) -> None:
-    SolutionRegistry.run(year, day)
-
-
 T1 = TypeVar("T1")
 T2 = TypeVar("T2")
 SolveFunctionT = Callable[[Reader], tuple[T1, T2]]
+
+
+def run(year: Optional[int], day: Optional[int]) -> tuple[T1, T2]:
+    return SolutionRegistry.run(year, day)
 
 
 class SolutionRegistry:
@@ -20,7 +19,9 @@ class SolutionRegistry:
 
     @staticmethod
     def get_year_day() -> tuple[int, int]:
-        # 2, because not this function (0), not the register function (1), rather its call site (2)
+        # 2, because not this function (0),
+        # not the register function (1),
+        # but rather its call site: (2)
         solver_filename = inspect.stack()[2].filename
         rex = re.compile(r"year_([0-9]+).*task_([0-9]+)")
         year, day = rex.findall(solver_filename)[0]
@@ -35,7 +36,7 @@ class SolutionRegistry:
         return fun
 
     @classmethod
-    def run(cls, year: Optional[int], day: Optional[int]):
+    def run(cls, year: Optional[int], day: Optional[int]) -> tuple[T1, T2]:
         y = year if year is not None else max(cls.solutions)
         d = day if day is not None else max(cls.solutions[y])
 
