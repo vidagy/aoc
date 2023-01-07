@@ -52,4 +52,4 @@ def solve(reader: Reader) -> tuple[int, int]:
     res_2 = end_2_x * end_2_depth
     logger.info(f"{res_2=}")
 
-    return res_1, 0
+    return res_1, res_2
