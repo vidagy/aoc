@@ -1,13 +1,17 @@
 #!python3
 
+import logging
 import os
 import re
 from argparse import ArgumentParser, Namespace
 from collections import defaultdict
 from datetime import date
 from pathlib import Path
+from typing import Optional
 
 from aoc.util.integration import get_task_input
+
+logger = logging.getLogger(__name__)
 
 TEMPLATE = """import logging
 
@@ -50,18 +54,34 @@ def find_solutions() -> dict[int, set[int]]:
     return res
 
 
-def get_max_day(state: dict[int, set[int]]) -> tuple[int, int]:
+def get_max_day(
+    state: dict[int, set[int]], year_override: Optional[int]
+) -> tuple[int, int]:
     if not state:
         return date.today().year, 1
-    year = max(state)
+    year = year_override if year_override is not None else max(state)
     days = state[year]
     if not days:
         return year, 1
     return year, max(days)
 
 
-def get_new_day(state: dict[int, set[int]]) -> tuple[int, int]:
-    year, day = get_max_day(state)
+def get_new_day(
+    state: dict[int, set[int]],
+    year_override: Optional[int],
+    day_override: Optional[int],
+) -> tuple[int, int]:
+    if year_override is not None and day_override is not None:
+        if year_override in state and day_override in state[year_override]:
+            logger.info(
+                f"Files already exist, "
+                f"will not create them again: "
+                f"year={year_override} day={day_override}"
+            )
+            exit()
+        return year_override, day_override
+
+    year, day = get_max_day(state, year_override)
     if day == 25:
         return year + 1, 1
     return year, day + 1
@@ -116,12 +136,7 @@ def get_args() -> Namespace:
 def main():
     args = get_args()
     current_state = find_solutions()
-    new_year, new_day = get_new_day(current_state)
-
-    if args.year is not None:
-        new_year = args.year
-    if args.day is not None:
-        new_day = args.day
+    new_year, new_day = get_new_day(current_state, args.year, args.day)
 
     create_task(new_year, new_day)
 
