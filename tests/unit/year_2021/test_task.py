@@ -23,3 +23,9 @@ def test_task_04():
     res_1, res_2 = SolutionRegistry.run(2021, 4)
     assert res_1 == 4662
     assert res_2 == 12080
+
+
+def test_task_05():
+    res_1, res_2 = SolutionRegistry.run(2021, 5)
+    assert res_1 == 6856
+    assert res_2 == 20666
