@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 def evolve(fish: dict[int, int]) -> dict[int, int]:
-    new_fish = defaultdict(lambda: 0)
+    new_fish: dict[int, int] = defaultdict(lambda: 0)
     for timer, c in fish.items():
         if timer > 0:
             new_fish[timer - 1] += c
@@ -16,7 +16,7 @@ def evolve(fish: dict[int, int]) -> dict[int, int]:
             new_fish[6] += c
             new_fish[8] += c
 
-    return  new_fish
+    return new_fish
 
 
 @SolutionRegistry.register
@@ -24,7 +24,7 @@ def solve(reader: Reader) -> tuple[int, int]:
     lines = [int(n) for n in reader.file_to_lines(6)[0].split(",")]
     logger.info(f"{lines[:3]=}...")
 
-    fish = Counter(lines)
+    fish: dict[int, int] = Counter(lines)
 
     for i in range(80):
         fish = evolve(fish)
