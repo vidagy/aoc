@@ -25,8 +25,14 @@ logger = logging.getLogger(__name__)
 def solve(reader: Reader) -> tuple[int, int]:
     lines = reader.file_to_lines(%(day)d)
     logger.info(f"{lines[:3]=}...")
+    
+    res_1 = 0
+    logger.info(f"{res_1=}")
+    
+    res_2 = 0
+    logger.info(f"{res_2=}")
 
-    return 0, 0
+    return res_1, res_2
 """
 
 TEST_TEMPLATE = """from aoc.registry import SolutionRegistry
@@ -34,6 +40,7 @@ TEST_TEMPLATE = """from aoc.registry import SolutionRegistry
 """
 
 TEST_CASE_TEMPLATE = """
+
 def test_task_%(day)02d():
     res_1, res_2 = SolutionRegistry.run(%(year)s, %(day)s)
     assert res_1 == 0
