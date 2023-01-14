@@ -25,10 +25,10 @@ logger = logging.getLogger(__name__)
 def solve(reader: Reader) -> tuple[int, int]:
     lines = reader.file_to_lines(%(day)d)
     logger.info(f"{lines[:3]=}...")
-    
+
     res_1 = 0
     logger.info(f"{res_1=}")
-    
+
     res_2 = 0
     logger.info(f"{res_2=}")
 
