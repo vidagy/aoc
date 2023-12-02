@@ -1,4 +1,4 @@
-#!python3
+#!/usr/bin/env python3
 
 import logging
 from argparse import ArgumentParser, Namespace
@@ -10,7 +10,16 @@ LOG_LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 
 def get_args() -> Namespace:
-    parser = ArgumentParser()
+    parser = ArgumentParser(
+        description=(
+            "Command line utility to run the last task."
+        ),
+        epilog=(
+            "Simple usage is just to call without arguments: "
+            "\"./run.py\". "
+            "This will run the last solution."
+        )
+    )
     parser.add_argument("--log-level", default="INFO", choices=LOG_LEVELS)
     parser.add_argument("-y", "--year", default=None, type=int, required=False)
     parser.add_argument("-d", "--day", default=None, type=int, required=False)

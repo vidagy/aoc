@@ -137,7 +137,18 @@ def create_task(year: int, day: int) -> None:
 
 
 def get_args() -> Namespace:
-    parser = ArgumentParser()
+    parser = ArgumentParser(
+        description=(
+            "Command line utility to retrieve inputs for next tasks and "
+            "scaffold solution templates."
+        ),
+        epilog=(
+            "Simple usage is just to call without arguments: "
+            "\"./next.py\". "
+            "This will retrieve the inputs for the first day in the year, "
+            "that does not have a solution yet."
+        )
+    )
     parser.add_argument("-y", "--year", default=None, type=int, required=False)
     parser.add_argument("-d", "--day", default=None, type=int, required=False)
     return parser.parse_args()
