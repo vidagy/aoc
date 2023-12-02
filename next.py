@@ -1,4 +1,4 @@
-#!python3
+#!/usr/bin/env python3
 
 import logging
 import os
@@ -11,6 +11,9 @@ from typing import Optional
 
 from aoc.util.integration import get_task_input
 
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s : %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 TEMPLATE = """import logging
