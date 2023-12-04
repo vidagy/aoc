@@ -1,14 +1,13 @@
+import logging
 from collections import defaultdict
 from dataclasses import dataclass, field
-import logging
-from webbrowser import get
 
 from aoc.registry import SolutionRegistry
 from aoc.util.reader import Reader
 
 logger = logging.getLogger(__name__)
 
-    
+
 @dataclass(frozen=True, unsafe_hash=True)
 class Gear:
     x: int
@@ -42,11 +41,12 @@ class Num:
         if active:
             nums.append(Num(n, len(line) - len(str(val)), val))
         return nums
-    
-    def add_gears(self, frame: list[tuple[int, int]], lines:list[str]) -> None:
-        for x,y in frame:
+
+    def add_gears(self, frame: list[tuple[int, int]], lines: list[str]) -> None:
+        for x, y in frame:
             if lines[x][y] == "*":
                 self.gear_neighbor.append(Gear(x, y))
+
 
 def is_special_character(c: str) -> bool:
     if len(c) != 1:
@@ -57,7 +57,7 @@ def is_special_character(c: str) -> bool:
 def get_frame(n_x: int, n_y: int, num: Num) -> list[tuple[int, int]]:
     def in_canvas(x: int, y: int) -> bool:
         return x >= 0 and x < n_x and y >= 0 and y < n_y
-    
+
     res = []
     for i in range(num.x - 1, num.x + 2):
         for j in range(num.y - 1, num.y + len(str(num.val)) + 1):
@@ -66,7 +66,10 @@ def get_frame(n_x: int, n_y: int, num: Num) -> list[tuple[int, int]]:
                     res.append((i, j))
     return res
 
-def get_nums_next_to_symbols(n_x: int, n_y: int, nums: list[Num], lines: list[str]) -> list[Num]:
+
+def get_nums_next_to_symbols(
+    n_x: int, n_y: int, nums: list[Num], lines: list[str]
+) -> list[Num]:
     res = []
     for num in nums:
         frame = get_frame(n_x, n_y, num)
@@ -84,6 +87,7 @@ def get_gears_to_nums(nums: list[Num]) -> dict[Gear, list[Num]]:
 
     return res
 
+
 @SolutionRegistry.register
 def solve(reader: Reader) -> tuple[int, int]:
     lines = reader.file_to_lines(3)
@@ -94,7 +98,9 @@ def solve(reader: Reader) -> tuple[int, int]:
 
     logger.info(f"{n_x=} {n_y=}")
 
-    nums = [num for n, line in enumerate(lines) for num in Num.extract_from_line(n, line)]
+    nums = [
+        num for n, line in enumerate(lines) for num in Num.extract_from_line(n, line)
+    ]
     logger.info(f"{nums[:33]=}...")
     nums_next_to_symbols = get_nums_next_to_symbols(n_x, n_y, nums, lines)
 
@@ -104,8 +110,7 @@ def solve(reader: Reader) -> tuple[int, int]:
     gears_to_nums = get_gears_to_nums(nums_next_to_symbols)
     res_2 = sum(
         nums[0].val * nums[1].val
-        for gear, nums
-        in gears_to_nums.items()
+        for gear, nums in gears_to_nums.items()
         if len(nums) == 2
     )
     logger.info(f"{res_2=}")

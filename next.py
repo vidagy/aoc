@@ -144,10 +144,10 @@ def get_args() -> Namespace:
         ),
         epilog=(
             "Simple usage is just to call without arguments: "
-            "\"./next.py\". "
+            '"./next.py". '
             "This will retrieve the inputs for the first day in the year, "
             "that does not have a solution yet."
-        )
+        ),
     )
     parser.add_argument("-y", "--year", default=None, type=int, required=False)
     parser.add_argument("-d", "--day", default=None, type=int, required=False)
