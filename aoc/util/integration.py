@@ -28,7 +28,7 @@ def submit(year: int, day: int, part: int, res: str) -> None:
     logger.info(f"Submitting {data}...")
     resp = post(url, data=data, cookies=get_cookies())
     if resp.status_code != 200:
-        raise Exception("Failed to submit solution")
+        raise Exception(f"Failed to submit solution {resp=}")
 
     text_content = resp.content.decode("utf-8")
 
