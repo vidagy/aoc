@@ -21,9 +21,9 @@ class Cluster:
                 data[-1].append(c == "#")
         return Cluster(data)
 
-    def value(self) -> int:
-        return (self.find_vertical_reflection() or 0) + (
-            self.find_horizontal_reflection() or 0
+    def value(self, expected_difference: int = 0) -> int:
+        return (self.find_vertical_reflection(expected_difference) or 0) + (
+            self.find_horizontal_reflection(expected_difference) or 0
         ) * 100
 
     @property
@@ -41,36 +41,38 @@ class Cluster:
         return _getter
 
     def _find_reflections(
-        self, getter: Callable[[int], list[bool]], width: int
+        self, getter: Callable[[int], list[bool]], width: int, expected_difference: int
     ) -> Optional[int]:
-        candidates = set()
-        anti_candidates = set()
-
-        for i in range(width - 1):
-            col = getter(i)
-            for j in range(i + 1, width):
-                other_col = getter(j)
-                if col == other_col:
-                    if (j - i) % 2 != 0:
-                        val = (j + i + 1) // 2
-                        if val not in anti_candidates:
-                            candidates.add(val)
-                else:
-                    if (j - i) % 2 != 0:
-                        val = (j + i + 1) // 2
-                        anti_candidates.add(val)
-        candidates = candidates.difference(anti_candidates)
-        if len(candidates) == 1:
-            return next(iter(candidates))
-        elif len(candidates) > 1:
-            raise Exception("fuck!")
+        reflections = set()
+        for centerline in range(1, width):
+            differences = 0
+            for delta in range(1, width):
+                lower = centerline - delta
+                upper = centerline + delta - 1
+                if lower < 0 or upper >= width:
+                    continue
+                differences += sum(
+                    lle != ule for lle, ule in zip(getter(lower), getter(upper))
+                )
+                if differences > expected_difference:
+                    break
+            if differences == expected_difference:
+                reflections.add(centerline)
+        if len(reflections) == 1:
+            return next(iter(reflections))
+        elif len(reflections) > 1:
+            raise Exception("Too many reflections")
         return None
 
-    def find_horizontal_reflection(self) -> Optional[int]:
-        return self._find_reflections(self.row_getter, width=len(self.col_getter(0)))
+    def find_horizontal_reflection(self, expected_difference: int = 0) -> Optional[int]:
+        return self._find_reflections(
+            self.row_getter, len(self.col_getter(0)), expected_difference
+        )
 
-    def find_vertical_reflection(self) -> Optional[int]:
-        return self._find_reflections(self.col_getter, width=len(self.row_getter(0)))
+    def find_vertical_reflection(self, expected_difference: int = 0) -> Optional[int]:
+        return self._find_reflections(
+            self.col_getter, len(self.row_getter(0)), expected_difference
+        )
 
 
 @SolutionRegistry.register
@@ -82,7 +84,7 @@ def solve(reader: Reader) -> tuple[int, int]:
     res_1 = sum(c.value() for c in clusters)
     logger.info(f"{res_1=}")
 
-    res_2 = 0
+    res_2 = sum(c.value(expected_difference=1) for c in clusters)
     logger.info(f"{res_2=}")
 
     return res_1, res_2
