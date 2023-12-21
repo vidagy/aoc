@@ -87,11 +87,35 @@ def test_task_14():
 
 def test_task_15():
     res_1, res_2 = SolutionRegistry.run(2023, 15)
-    assert res_1 == 0
-    assert res_2 == 0
+    assert res_1 == 497373
+    assert res_2 == 259356
 
 
 def test_task_16():
     res_1, res_2 = SolutionRegistry.run(2023, 16)
+    assert res_1 == 6605
+    assert res_2 == 6766
+
+
+def test_task_17():
+    res_1, res_2 = SolutionRegistry.run(2023, 17)
+    assert res_1 == 859
+    assert res_2 == 1027
+
+
+def test_task_18():
+    res_1, res_2 = SolutionRegistry.run(2023, 18)
+    assert res_1 == 0
+    assert res_2 == 0
+
+
+def test_task_19():
+    res_1, res_2 = SolutionRegistry.run(2023, 19)
+    assert res_1 == 0
+    assert res_2 == 0
+
+
+def test_task_20():
+    res_1, res_2 = SolutionRegistry.run(2023, 20)
     assert res_1 == 0
     assert res_2 == 0
