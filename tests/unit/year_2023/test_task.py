@@ -105,8 +105,8 @@ def test_task_17():
 
 def test_task_18():
     res_1, res_2 = SolutionRegistry.run(2023, 18)
-    assert res_1 == 0
-    assert res_2 == 0
+    assert res_1 == 48795
+    assert res_2 == 40654918441248
 
 
 def test_task_19():
