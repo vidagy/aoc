@@ -84,7 +84,6 @@ class GearRange:
     m: tuple[int, int]
     a: tuple[int, int]
     s: tuple[int, int]
-    is_positive: bool
 
     @property
     def deg_freedom(self) -> int:
@@ -93,11 +92,10 @@ class GearRange:
             * (self.m[1] - self.m[0])
             * (self.a[1] - self.a[0])
             * (self.s[1] - self.s[0])
-            * (1 if self.is_positive else -1)
         )
 
     def __hash__(self) -> int:
-        return hash((self.x, self.m, self.a, self.s, self.is_positive))
+        return hash((self.x, self.m, self.a, self.s))
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, GearRange):
@@ -107,7 +105,6 @@ class GearRange:
             and self.m == other.m
             and self.a == other.a
             and self.s == other.s
-            and self.is_positive == other.is_positive
         )
 
     def copy_with(
@@ -118,64 +115,14 @@ class GearRange:
         s: Optional[tuple[int, int]] = None,
     ) -> "GearRange":
         if x is not None:
-            return GearRange(x, self.m, self.a, self.s, True)
+            return GearRange(x, self.m, self.a, self.s)
         if m is not None:
-            return GearRange(self.x, m, self.a, self.s, True)
+            return GearRange(self.x, m, self.a, self.s)
         if a is not None:
-            return GearRange(self.x, self.m, a, self.s, True)
+            return GearRange(self.x, self.m, a, self.s)
         if s is not None:
-            return GearRange(self.x, self.m, self.a, s, True)
+            return GearRange(self.x, self.m, self.a, s)
         return self
-
-    def minus(self, other: "GearRange") -> list["GearRange"]:
-        if self.is_positive != other.is_positive:
-            return [self]
-        if not (
-            GearRange.has_overlap(self.x, other.x)
-            and GearRange.has_overlap(self.m, other.m)
-            and GearRange.has_overlap(self.a, other.a)
-            and GearRange.has_overlap(self.s, other.s)
-        ):
-            return [self]
-        res = []
-
-        xx = [self.x] + GearRange.range_minus(self.x, other.x)
-        mm = [self.m] + GearRange.range_minus(self.m, other.m)
-        aa = [self.a] + GearRange.range_minus(self.a, other.a)
-        ss = [self.s] + GearRange.range_minus(self.s, other.s)
-
-        for i, x in enumerate(xx):
-            for j, m in enumerate(mm):
-                for k, a in enumerate(aa):
-                    for n, s in enumerate(ss):
-                        if i + j + k + n != 0:
-                            is_positive = (
-                                int(i != 0) + int(j != 0) + int(k != 0) + int(n != 0)
-                            ) % 2
-                            res.append(GearRange(x, m, a, s, bool(is_positive)))
-        return res
-
-    @staticmethod
-    def range_minus(
-        this: tuple[int, int], that: tuple[int, int]
-    ) -> list[tuple[int, int]]:
-        this_s, this_e = this
-        that_s, that_e = that
-        if that_s <= this_s and that_e >= this_e:
-            return []
-        if this_s < that_s and that_e >= this_e:
-            return [(this_s, that_s)]
-        if that_s <= this_s and this_e >= that_e:
-            return [(that_e, this_e)]
-        if this_s < that_s and that_e < this_e:
-            return [(this_s, that_s), (that_e, this_e)]
-        raise Exception("fuck")
-
-    @staticmethod
-    def has_overlap(r1: tuple[int, int], r2: tuple[int, int]) -> bool:
-        s_1, e_1 = r1
-        s_2, e_2 = r2
-        return (s_2 < e_1 <= e_2) or (s_1 < e_2 <= e_1)
 
 
 @dataclass(frozen=True, unsafe_hash=True)
@@ -281,7 +228,7 @@ def build_workflow_graph_skeleton(workflows: dict[str, Workflow]) -> nx.DiGraph:
     res.add_edge(
         "start",
         workflows["in"],
-        gear_ranges=[GearRange((1, 4001), (1, 4001), (1, 4001), (1, 4001), True)],
+        gear_ranges=[GearRange((1, 4001), (1, 4001), (1, 4001), (1, 4001))],
     )
 
     return res
@@ -310,36 +257,12 @@ def build_workflow_graph(workflows: dict[str, Workflow]) -> nx.DiGraph:
     return graph
 
 
-def remove_duplicate_ranges(in_ranges: list[GearRange]) -> list[GearRange]:
-    res: list[GearRange] = [in_ranges[0]]
-    working_set = set(in_ranges)
-
-    while working_set:
-        this: Optional[GearRange] = working_set.pop()
-        for that in res:
-            if this is None:
-                break
-            residuals = this.minus(that)
-            if len(residuals) == 0:
-                this = None
-                break
-            elif len(residuals) > 1:
-                working_set.union(residuals[1:])
-            this = residuals[0]
-        if this is not None:
-            res.append(this)
-
-    return res
-
-
 def calculate_possibilities(graph: nx.DiGraph, workflows: dict[str, Workflow]) -> int:
     in_ranges = []
     for _, _, gear_ranges in graph.in_edges(workflows["A"], data="gear_ranges"):
         in_ranges.extend(gear_ranges)
 
-    orthogonal_ranges = remove_duplicate_ranges(in_ranges)
-
-    return sum(r.deg_freedom for r in orthogonal_ranges)
+    return sum(r.deg_freedom for r in in_ranges)
 
 
 @SolutionRegistry.register

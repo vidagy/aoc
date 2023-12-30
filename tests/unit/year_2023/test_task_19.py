@@ -1,58 +1,8 @@
 from aoc.year_2023.task_19 import (
-    GearRange,
     Workflow,
     build_workflow_graph,
     calculate_possibilities,
-    remove_duplicate_ranges,
 )
-
-
-def test_task_17_range_minus():
-    assert [] == GearRange((0, 10), (0, 10), (0, 10), (0, 10), True).minus(
-        GearRange((0, 10), (0, 10), (0, 10), (0, 10), True)
-    )
-    assert [GearRange((9, 10), (0, 10), (0, 10), (0, 10), True)] == GearRange(
-        (0, 10), (0, 10), (0, 10), (0, 10), True
-    ).minus(GearRange((0, 9), (0, 10), (0, 10), (0, 10), True))
-    assert [
-        GearRange((0, 10), (8, 10), (0, 10), (0, 10), True),
-        GearRange((9, 10), (0, 10), (0, 10), (0, 10), True),
-        GearRange((9, 10), (8, 10), (0, 10), (0, 10), False),
-    ] == GearRange((0, 10), (0, 10), (0, 10), (0, 10), True).minus(
-        GearRange((0, 9), (0, 8), (0, 10), (0, 10), True)
-    )
-    assert [
-        GearRange((0, 10), (0, 10), (7, 10), (0, 10), True),
-        GearRange((0, 10), (8, 10), (0, 10), (0, 10), True),
-        GearRange((0, 10), (8, 10), (7, 10), (0, 10), False),
-        GearRange((9, 10), (0, 10), (0, 10), (0, 10), True),
-        GearRange((9, 10), (0, 10), (7, 10), (0, 10), False),
-        GearRange((9, 10), (8, 10), (0, 10), (0, 10), False),
-        GearRange((9, 10), (8, 10), (7, 10), (0, 10), True),
-    ] == GearRange((0, 10), (0, 10), (0, 10), (0, 10), True).minus(
-        GearRange((0, 9), (0, 8), (0, 7), (0, 10), True)
-    )
-
-
-def test_task_19_remove_dup():
-    assert [
-        GearRange((0, 10), (0, 10), (0, 10), (0, 10), True)
-    ] == remove_duplicate_ranges(
-        [
-            GearRange((0, 10), (0, 10), (0, 10), (0, 10), True),
-            GearRange((0, 10), (0, 10), (0, 10), (0, 10), True),
-        ]
-    )
-    assert [
-        GearRange((0, 9), (0, 10), (0, 10), (0, 10), True),
-        GearRange((9, 10), (0, 10), (0, 10), (0, 10), True),
-    ] == remove_duplicate_ranges(
-        [
-            GearRange((0, 9), (0, 10), (0, 10), (0, 10), True),
-            GearRange((0, 10), (0, 10), (0, 10), (0, 10), True),
-        ]
-    )
-
 
 INPUT = """px{a<2006:qkq,m>2090:A,rfg}
 pv{a>1716:R,A}
