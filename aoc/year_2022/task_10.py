@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 def get_register(lines: list[tuple[str, int]]) -> list[int]:
     current = 1
     register = [current]
-    for (op, num) in lines:
+    for op, num in lines:
         if op == "addx":
             register.append(current)
             register.append(current)

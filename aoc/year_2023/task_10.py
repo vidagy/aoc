@@ -134,15 +134,17 @@ def add_node_to_domains(node: Pos, domains: set[set[Pos]]) -> None:
         Pos(1, 0) + node,
         Pos(-1, 0) + node,
     }
+    domains_to_remove = set()
     for domain in domains:
         if node in domain:
             return
         is_touch = any(n in domain for n in neighbors)
         if is_touch:
             new_domain = new_domain.union(domain)
-            domains.remove(domain)
-
-    domains.add(new_domain)
+            domains_to_remove.add(domain)
+    for d in domains_to_remove:
+        domains.remove(d)
+    domains.add(frozenset(new_domain))
 
 
 def grow_domain(

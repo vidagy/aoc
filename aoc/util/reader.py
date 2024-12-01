@@ -51,7 +51,9 @@ def tokenize(
     for line in inp:
         if skip_empty and not len(line.strip()):
             continue
-        out.append([t.strip() for t in line.split(separator)])
+        out.append(
+            [t.strip() for t in line.split(separator) if not skip_empty or t.strip()]
+        )
     return out
 
 

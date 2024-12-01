@@ -77,7 +77,7 @@ class TaskInput:
                 )
 
         holes = TaskInput.find_holes(start, end, list(res.keys()))
-        for (h_s, h_e) in holes:
+        for h_s, h_e in holes:
             res[(h_s, h_e)] = (h_s, h_e)
         return res
 
