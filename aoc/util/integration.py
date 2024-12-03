@@ -25,7 +25,7 @@ def get_task_input(year: int, day: int) -> bytes:
 def submit(year: int, day: int, part: int, res: str) -> None:
     url = f"https://adventofcode.com/{year}/day/{day}/answer"
     data = {"level": part, "answer": res}
-    logger.info(f"Submitting {data}...")
+    logger.info(f"Submitting {data} for {year=} {day=}...")
     resp = post(url, data=data, cookies=get_cookies())
     if resp.status_code != 200:
         raise Exception(f"Failed to submit solution {resp=}")

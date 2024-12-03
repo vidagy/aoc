@@ -3,7 +3,7 @@
 import logging
 from argparse import ArgumentParser, Namespace
 
-from aoc.registry import run
+from aoc.registry import SolutionRegistry
 from aoc.util.integration import submit
 
 LOG_LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
@@ -37,8 +37,10 @@ def set_logging(log_level: str):
 if __name__ == "__main__":
     args = get_args()
     set_logging(args.log_level)
-    res_1, res_2 = run(args.year, args.day)  # type: ignore
+
+    year, day = SolutionRegistry.get_year_date(args.year, args.day)
+    res_1, res_2 = SolutionRegistry.run(year, day)  # type: ignore
 
     if args.submit:
         res = str(res_1) if args.submit == 1 else str(res_2)
-        submit(args.year, args.day, args.submit, res)
+        submit(year, day, args.submit, res)

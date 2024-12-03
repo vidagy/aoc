@@ -10,15 +10,19 @@ T2 = TypeVar("T2")
 SolveFunctionT = Callable[[Reader], tuple[T1, T2]]
 
 
-def run(year: Optional[int], day: Optional[int]) -> tuple[T1, T2]:
-    return SolutionRegistry.run(year, day)
-
-
 class SolutionRegistry:
     solutions: dict[int, dict[int, SolveFunctionT]] = defaultdict(dict)
 
+    @classmethod
+    def get_year_date(
+        cls, input_year: Optional[int], input_day: Optional[int]
+    ) -> tuple[int, int]:
+        y = input_year if input_year is not None else max(cls.solutions)
+        d = input_day if input_day is not None else max(cls.solutions[y])
+        return y, d
+
     @staticmethod
-    def get_year_day() -> tuple[int, int]:
+    def _get_year_day_of_this_solution() -> tuple[int, int]:
         # 2, because not this function (0),
         # not the register function (1),
         # but rather its call site: (2)
@@ -30,15 +34,12 @@ class SolutionRegistry:
 
     @classmethod
     def register(cls, fun: SolveFunctionT) -> SolveFunctionT:
-        year, day = cls.get_year_day()
+        year, day = cls._get_year_day_of_this_solution()
         cls.solutions[year][day] = fun
 
         return fun
 
     @classmethod
-    def run(cls, year: Optional[int], day: Optional[int]) -> tuple[T1, T2]:
-        y = year if year is not None else max(cls.solutions)
-        d = day if day is not None else max(cls.solutions[y])
-
-        reader = Reader(y)
-        return cls.solutions[y][d](reader)
+    def run(cls, year: int, day: int) -> tuple[T1, T2]:
+        reader = Reader(year)
+        return cls.solutions[year][day](reader)
