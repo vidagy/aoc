@@ -103,7 +103,7 @@ class Pipes:
 
         return Pipes(graph, start)
 
-    def find_steps(self, lines: list[str]) -> list[Pos]:
+    def find_steps(self, lines: list[str]) -> tuple[str, list[Pos]]:
         for s_pipe, neighbors in PIPE_TO_CONNECTIONS.items():
             for step_1, step_2 in neighbors:
                 start = self.start + step_1
@@ -120,78 +120,67 @@ class Pipes:
                         logger.info(
                             f"{start=} {lines[start.x][start.y]=} {end=} {lines[end.x][end.y]=} {s_pipe=} {len(path)=}"
                         )
-                        return path
+                        return s_pipe, path
                     except exception.NetworkXNoPath:
                         pass
         raise Exception("blaa")
 
 
-def add_node_to_domains(node: Pos, domains: set[set[Pos]]) -> None:
-    new_domain = {node}
-    neighbors = {
-        Pos(0, 1) + node,
-        Pos(0, -1) + node,
-        Pos(1, 0) + node,
-        Pos(-1, 0) + node,
-    }
-    domains_to_remove = set()
-    for domain in domains:
-        if node in domain:
-            return
-        is_touch = any(n in domain for n in neighbors)
-        if is_touch:
-            new_domain = new_domain.union(domain)
-            domains_to_remove.add(domain)
-    for d in domains_to_remove:
-        domains.remove(d)
-    domains.add(frozenset(new_domain))
+class LineWalker:
+    def __init__(self, path: set[Pos], size_y: int, lines: list[str]) -> None:
+        self.path = path
+        self.size_y = size_y
+        self.lines = lines
 
+        self.num_inside: int = 0
+        self.is_inside: bool = False
+        self.last_direction: str = ""
 
-def grow_domain(
-    domain: set[Pos], domains: set[set[Pos]], path: list[Pos], lines: list[str]
-) -> None:
-    N_x = len(lines)
-    N_y = len(lines[0])
-    for node in domain:
-        neighbors = {
-            Pos(0, 1) + node,
-            Pos(0, -1) + node,
-            Pos(1, 0) + node,
-            Pos(-1, 0) + node,
-        }
-        for n in neighbors:
-            if n not in domain and n not in path and 0 <= n.x < N_x and 0 <= n.y < N_y:
-                add_node_to_domains(n, domains)
+    def walk(self, x: int) -> int:
+        previous_is_on_path = False
+        for y in range(self.size_y):
+            current_pos = Pos(x, y)
+            is_on_path = current_pos in self.path
 
+            did_step_down = not is_on_path and previous_is_on_path
+            did_step_onto = is_on_path and not previous_is_on_path
 
-def grow_domains(domains: set[set[Pos]], path: list[Pos], lines: list[str]) -> None:
-    prev_domains: set[set[Pos]] = set()
-    while True:
-        for domain in domains:
-            grow_domain(domain, domains, path, lines)
+            if is_on_path and previous_is_on_path:
+                did_switch = self.lines[x][y] in {"|", "F", "L"}
+                if did_switch:
+                    did_step_down = True
+                    did_step_onto = True
 
-        if prev_domains == domains:
-            return
+            if did_step_down:
+                previous_dir = self.lines[x][y - 1]
+                if (
+                    previous_dir == "|"
+                    or (self.last_direction == "F" and previous_dir == "J")
+                    or (self.last_direction == "L" and previous_dir == "7")
+                ):
+                    # we crossed a domain
+                    self.is_inside = not self.is_inside
+                self.last_direction = ""
 
-        prev_domains = deepcopy(domains)
+            if did_step_onto:
+                self.last_direction = self.lines[x][y]
+
+            if not is_on_path:
+                if self.is_inside:
+                    self.num_inside += 1
+
+            previous_is_on_path = is_on_path
+        return self.num_inside
 
 
 def count_containment(path: list[Pos], lines: list[str]) -> int:
     path_set = set(path)
-    domains: set[set[Pos]] = set()
-    for node in path_set:
-        neighbors = PIPE_TO_NEIGHBORS[lines[node.x][node.y]]
-        for neighbor in neighbors:
-            pos_n = neighbor + node
-            if pos_n not in path_set and all(pos_n not in domain for domain in domains):
-                add_node_to_domains(pos_n, domains)
+    inside = 0
 
-    grow_domains(domains, path, lines)
+    for x in range(len(lines)):
+        inside += LineWalker(path_set, len(lines[0]), lines).walk(x)
 
-    for domain in domains:
-        logger.info(f"{len(domain)=} {domain=}")
-
-    return 1
+    return inside
 
 
 @SolutionRegistry.register
@@ -200,12 +189,17 @@ def solve(reader: Reader) -> tuple[int, int]:
     logger.info(f"{lines[:3]=}...")
 
     pipes = Pipes.create(lines)
-    path = pipes.find_steps(lines)
+    s_pipe, path = pipes.find_steps(lines)
     path.insert(0, pipes.start)
     path.append(pipes.start)
     res_1 = len(path) // 2
     logger.info(f"{res_1=}")
 
+    lines[pipes.start.x] = (
+        lines[pipes.start.x][: pipes.start.y]
+        + s_pipe
+        + lines[pipes.start.x][pipes.start.y + 1 :]
+    )
     res_2 = count_containment(path, lines)
     logger.info(f"{res_2=}")
 
