@@ -1,4 +1,4 @@
-from aoc.util.reader import convert, split_lines_by_empty_line, tokenize_by_char
+from aoc.util.reader import convert, rotate, split_lines_by_empty_line, tokenize_by_char
 
 
 def test_split_lines_by_empty_line():
@@ -38,3 +38,9 @@ def test_input():
         [[1, 9, 9], [2, 0, 0], [2, 0, 8]],
         [[2, 0, 0], [2, 0, 7], [2, 4, 0]],
     ]
+
+
+def test_rotate():
+    inp = [[1, 2, 3], [4, 5, 6]]
+
+    assert [[4, 1], [5, 2], [6, 3]] == rotate(inp)

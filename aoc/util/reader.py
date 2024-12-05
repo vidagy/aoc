@@ -85,6 +85,23 @@ def transpose(inp: list[list[str]]) -> list[list[str]]:
     return out
 
 
+def rotate(inp: list[list[str]]) -> list[list[str]]:
+    assert len(inp) > 0
+    row_num = len(inp)
+    col_num = len(inp[0])
+
+    out: list[list[str]] = []
+
+    for _ in range(col_num):
+        out.append([])
+
+    for j in range(col_num):
+        for i in range(row_num):
+            out[j].append(inp[row_num - i - 1][j])
+
+    return out
+
+
 def convert(cols: list[list[str]], converter: Any) -> list[list[Any]]:
     # assert len(types) == len(cols)
 
