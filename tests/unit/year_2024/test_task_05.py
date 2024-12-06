@@ -35,7 +35,7 @@ def get_lines(inp: str) -> list[list[str]]:
 
 
 def test_task_05():
-    order, order_graph, updates = get_order_and_updates(get_lines(INP))
+    order, updates = get_order_and_updates(get_lines(INP))
 
     assert is_update_ordered(updates[0], order)
     assert is_update_ordered(updates[1], order)
@@ -48,12 +48,12 @@ def test_task_05():
         line[len(line) // 2] for line in updates if is_update_ordered(line, order)
     )
 
-    assert order_line(updates[3], order_graph) == [97, 75, 47, 61, 53]
-    assert order_line(updates[4], order_graph) == [61, 29, 13]
-    assert order_line(updates[5], order_graph) == [97, 75, 47, 29, 13]
+    assert order_line(updates[3], order) == [97, 75, 47, 61, 53]
+    assert order_line(updates[4], order) == [61, 29, 13]
+    assert order_line(updates[5], order) == [97, 75, 47, 29, 13]
 
     assert 123 == sum(
-        order_line(line, order_graph)[len(line) // 2]
+        order_line(line, order)[len(line) // 2]
         for line in updates
         if not is_update_ordered(line, order)
     )
