@@ -18,6 +18,10 @@ test: unit-test
 unit-test:
 	$(PYTHON) -m pytest ./tests/unit $(TEST_FILTER_ARG)
 
+.PHONY: quick-test
+quick-test:
+	$(PYTHON) -m pytest ./tests/unit -m "not slow"
+
 # Lint
 
 .PHONY: lint

@@ -1,3 +1,5 @@
+import pytest
+
 from aoc.registry import SolutionRegistry
 
 
@@ -67,6 +69,7 @@ def test_task_11():
     assert res_2 == 634324905172
 
 
+@pytest.mark.slow
 def test_task_12():
     res_1, res_2 = SolutionRegistry.run(2023, 12)
     assert res_1 == 7090
@@ -79,6 +82,7 @@ def test_task_13():
     assert res_2 == 32069
 
 
+@pytest.mark.slow
 def test_task_14():
     res_1, res_2 = SolutionRegistry.run(2023, 14)
     assert res_1 == 108792
@@ -91,12 +95,14 @@ def test_task_15():
     assert res_2 == 259356
 
 
+@pytest.mark.slow
 def test_task_16():
     res_1, res_2 = SolutionRegistry.run(2023, 16)
     assert res_1 == 6605
     assert res_2 == 6766
 
 
+@pytest.mark.slow
 def test_task_17():
     res_1, res_2 = SolutionRegistry.run(2023, 17)
     assert res_1 == 859

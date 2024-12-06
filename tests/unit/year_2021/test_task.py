@@ -1,3 +1,5 @@
+import pytest
+
 from aoc.registry import SolutionRegistry
 
 
@@ -92,6 +94,7 @@ def test_task_14():
     assert res_2 == 4110568157153
 
 
+@pytest.mark.slow
 def test_task_15():
     res_1, res_2 = SolutionRegistry.run(2021, 15)
     assert res_1 == 656
