@@ -1,5 +1,3 @@
-from re import L
-
 from aoc.year_2024.task_09 import Drive, File, Space, merge_spaces
 
 INP = """2333133121414131402"""
