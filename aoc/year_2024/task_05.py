@@ -1,5 +1,4 @@
 import logging
-from collections import defaultdict
 
 from networkx import DiGraph, subgraph_view, topological_sort
 

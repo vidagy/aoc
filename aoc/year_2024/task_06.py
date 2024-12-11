@@ -1,7 +1,4 @@
 import logging
-from copy import deepcopy
-from math import exp
-from typing import Optional
 
 from aoc.registry import SolutionRegistry
 from aoc.util.reader import Reader, tokenize_by_char

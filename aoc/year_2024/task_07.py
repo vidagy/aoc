@@ -1,6 +1,4 @@
 import logging
-from itertools import product
-from math import prod
 
 from aoc.registry import SolutionRegistry
 from aoc.util.reader import Reader
