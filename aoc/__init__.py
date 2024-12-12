@@ -1,9 +1,13 @@
 def _load_year(path, package_name):
     from pkgutil import iter_modules
 
-    for importer, task_package_name, ispkg in iter_modules([path + "/" + package_name]):
+    for module_finder, task_package_name, ispkg in iter_modules(
+        [path + "/" + package_name]
+    ):
         if not ispkg and task_package_name.startswith("task_"):
-            importer.find_module(task_package_name).load_module(task_package_name)
+            module_finder.find_spec(task_package_name).loader.load_module(
+                task_package_name
+            )
 
 
 def _load_all_years():
