@@ -10,7 +10,7 @@ from aoc.util.reader import Reader, convert, tokenize
 logger = logging.getLogger(__name__)
 
 
-def evolve(stone: int) -> tuple[int, Optional[int]]:
+def evolve_stone(stone: int) -> tuple[int, Optional[int]]:
     if stone == 0:
         return 1, None
     digits = int(log10(stone) + 1)
@@ -27,7 +27,7 @@ def len_evolve_n_times(stone: Optional[int], n: int) -> int:
         return 0
     if n == 0:
         return 1
-    res1, res2 = evolve(stone)
+    res1, res2 = evolve_stone(stone)
     return len_evolve_n_times(res1, n - 1) + len_evolve_n_times(res2, n - 1)
 
 

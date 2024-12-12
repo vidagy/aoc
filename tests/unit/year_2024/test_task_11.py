@@ -1,12 +1,12 @@
-from aoc.year_2024.task_11 import evolve, len_evolve_n_times
+from aoc.year_2024.task_11 import evolve_stone, len_evolve_n_times
 
 
 def test_task_11():
-    assert evolve(125) == (253000, None)
-    assert evolve(17) == (1, 7)
-    assert evolve(253000) == (253, 0)
-    assert evolve(1) == (2024, None)
-    assert evolve(7) == (14168, None)
+    assert evolve_stone(125) == (253000, None)
+    assert evolve_stone(17) == (1, 7)
+    assert evolve_stone(253000) == (253, 0)
+    assert evolve_stone(1) == (2024, None)
+    assert evolve_stone(7) == (14168, None)
 
 
 def test_task_11_line():
