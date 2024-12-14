@@ -81,3 +81,10 @@ def test_task_13():
     res_1, res_2 = SolutionRegistry.run(2024, 13)
     assert res_1 == 27105
     assert res_2 == 101726882250942
+
+
+@pytest.mark.slow
+def test_task_14():
+    res_1, res_2 = SolutionRegistry.run(2024, 14)
+    assert res_1 == 224438715
+    assert res_2 == 7603
