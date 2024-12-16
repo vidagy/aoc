@@ -1,4 +1,4 @@
-from aoc.year_2024.task_12 import count_borders_x, count_intervals
+from aoc.year_2024.task_12 import count_intervals
 
 
 def test_count_intervals():

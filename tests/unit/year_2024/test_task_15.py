@@ -1,12 +1,6 @@
 import logging
 
-from aoc.year_2024.task_15 import (
-    MOVEMENTS,
-    NarrowWarehouse,
-    Pos,
-    Warehouse,
-    WideWarehouse,
-)
+from aoc.year_2024.task_15 import MOVEMENTS, NarrowWarehouse, Pos, WideWarehouse
 
 INP_SMALL = """
     ########

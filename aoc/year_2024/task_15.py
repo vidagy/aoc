@@ -1,8 +1,5 @@
 import logging
 from dataclasses import dataclass
-from os import stat
-from platform import mac_ver
-from typing import Optional
 
 from aoc.registry import SolutionRegistry
 from aoc.util.reader import Reader, split_lines_by_empty_line, tokenize_by_char
